@@ -6,7 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <!--Titulo de la pagina-->
-    <title>Detalle Ordenes[PA28819]</title>
+    <title>Detalle Ordenes</title>
     <!--Libreria Personalizada de Bootstrap-->
     <link rel="stylesheet" href="scss/custom.css" />
     <!--Libreria para iconos de Bootstrap(Por si es necesario)-->
@@ -20,19 +20,11 @@
 </head>
 
 <body id="app">
-    <!--Header STATICO (PA 28819)
-    CLASES:
-    Text Light: Coloca color blanco al texto
-    bg-primary: Coloca color azul a todo el div
-    ps-3: Coloca un padding de 3 px al text en la izquierda
-    py-1: Coloca un padding en el ejey de 1px; es decir arriba y abajo
--->
+    <!--********************** HEADER STATICO **********************-->      
     <header class="bg-primary">
-
         <div class="container-fluid">
             <!--La empresa por default-->
             <!--En el created hace un set de la empresa por default en empresa[0]-->
-
             <h1 class="navbar-brand  bg-primary text-uppercase text-light col-12 col-lg-12  rounded-3" href="#">
                 {{ selectedOrder.serie }} {{ selectedOrder.numero }} {{ selectedOrder.nombre }}</h1>
             <form class="pb-2">
@@ -48,7 +40,7 @@
         </div>
     </header>
 
-    <!--Contenedor Inventario-->
+    <!--***********************CONTENEDOR INVENTARIO***********************-->
     <div class="mx-1">
         <!--GRUPO HORIZONTAL ESTATICO con la clasificacion del inventario-->
         <div class="header">
@@ -69,64 +61,55 @@
             <div class="container mb-3">{{ loadingValue }}</div>
         </div>
 
-        <!--**********************GRUPO NO ESTATICO DE GENERACION DE OPS-->
+        <!--**********************GRUPO NO ESTATICO DE GENERACION DE OPS**************************-->
         <div id="ops">
             <ul v-for="op in ops" :key="`$index`" class="list-group list-group-horizontal col-12">
-
+                <!--********************OP, ARTICULOS, CANTIDAD-->
                 <li class="list-group-item col-2" v-bind:class="{'green-color': comprobarVerde(op)}">
                     {{ op.serie + '/' + op.numero }}
                 </li>
                 <li class="list-group-item col-6" v-bind:class="{'green-color': comprobarVerde(op)}">{{
                     op.denoart }}</li>
-                <li class="list-group-item col-1" style="text-align: right;" v-bind:class="{'green-color': comprobarVerde(op)}">{{
+                <li class="list-group-item col-1" style="text-align: right;"
+                    v-bind:class="{'green-color': comprobarVerde(op)}">{{
                     op.cantidad }}</li>
 
                 <!--*******************FONDO-->
-                <li class="list-group-item col-1 text-center" v-bind:class="{'green-color': comprobarVerde(op)}">                    
-                        
-                    <input v-if="op.fondo === 'X'" class="form-check-input" v-on:change="beforePost(op,'fondo')" type="checkbox"
-                            value="false">
-                    
-                    <input v-if="op.fondo === 'S'" class="form-check-input" v-on:change="beforePost(op,'fondo')" type="checkbox"
-                            value="true" checked>
-                                            
+                <li class="list-group-item col-1 text-center" v-bind:class="{'green-color': comprobarVerde(op)}">
+                    <input v-if="op.fondo === 'X'" class="form-check-input" v-on:change="beforePost(op,'fondo')"
+                        type="checkbox" value="false">
+                    <input v-if="op.fondo === 'S'" class="form-check-input" v-on:change="beforePost(op,'fondo')"
+                        type="checkbox" value="true" checked>
                 </li>
                 <!--******************LATERAL-->
                 <li class="list-group-item col-1 text-center" v-bind:class="{'green-color': comprobarVerde(op)}">
-                    
-                    <input v-if="op.lateral === 'X'" class="form-check-input" v-on:change="beforePost(op,'lateral')" type="checkbox"
-                    value="false" >
-         
-                    <input v-if="op.lateral === 'S'" class="form-check-input" v-on:change="beforePost(op,'lateral')" type="checkbox"
-                    value="true"  checked>
-                
+                    <input v-if="op.lateral === 'X'" class="form-check-input" v-on:change="beforePost(op,'lateral')"
+                        type="checkbox" value="false">
+                    <input v-if="op.lateral === 'S'" class="form-check-input" v-on:change="beforePost(op,'lateral')"
+                        type="checkbox" value="true" checked>
                 </li>
                 <!--*********************TAPA-->
                 <li class="list-group-item col-1 text-center" v-bind:class="{'green-color': comprobarVerde(op)}">
-                    
-                    <input v-if="op.tapa === 'X'" class="form-check-input" v-on:change="beforePost(op,'tapa')" type="checkbox"
-                        value="false" >
-                
-                    <input v-if="op.tapa === 'S'" class="form-check-input" v-on:change="beforePost(op,'tapa')" type="checkbox"
-                        value="true"  checked>
-                
+                    <input v-if="op.tapa === 'X'" class="form-check-input" v-on:change="beforePost(op,'tapa')"
+                        type="checkbox" value="false">
+                    <input v-if="op.tapa === 'S'" class="form-check-input" v-on:change="beforePost(op,'tapa')"
+                        type="checkbox" value="true" checked>
                 </li>
-
             </ul>
         </div>
     </div>
 
-
-    <footer class="footer text-center softgrey p-2" >
+    <!--**************************FOOTER DE LA PAGINA************************-->
+    <footer class="footer text-center softgrey p-2">
         <div v-show="!isDisabled">
-            <button type="button" class="btn btn-primary  w-50 h-100" data-bs-toggle="modal" data-bs-target="#exampleModal" >
+            <button type="button" class="btn btn-primary  w-50 h-100" data-bs-toggle="modal"
+                data-bs-target="#exampleModal">
                 Cerrar Producción
             </button>
         </div>
     </footer>
 
-
-    <!--Codigo del modal-->
+    <!--**********************CODIGO DEL MODAL******************************-->
     <!-- Modal -->
     <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog">

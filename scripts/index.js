@@ -1,18 +1,23 @@
-//require('dotenv').config()
-//const node =  require('node')
-//import axios from 'axios';
-
+// ! CAMBIAR A PROPIO ENDPOINT
 const ENDPOINT_URL = "http://192.168.235.81:8080";
 new Vue({
     el: "#app",
     data: {
-        //Array de ops que parseamos desde el fichero json
-        //ops: [],
-        toProduce: [],
-        //Array del fetch de json de empresas
-        orders: [],
-
-        //Objeto que guarda la empresa que esta selecionada en el select
+        /**
+         * TODAS LAS VARIABLES USADAS.
+         * - toProduce: Articulos que se van a enviar al backEND.
+         * - orders: Ordenes cargadas desde la base de datos.
+         * - selectedOrder: Orden seleccionada para ser editada.
+         * - ops: OPS que se cargan desde el backEND.
+         * - selectedOP: El OP seleccionado que enviamos a bdd cada vez que se clica en un check.
+         * - loadingValue: Valor que se muestra en el loading.
+         * - isDisabled: Si esta deshabilitado el boton de enviar.
+         * @typedef {{toProduce: Array, orders: Array, selectedOrder: Object,
+         *            ops: Array,opEnviar:Object,loadingValue:String,isDisabled:Boolean,}}
+         */
+                
+        toProduce: [],        
+        orders: [],        
         selectedOrder: {
             id: '',
             nomfiscli: '',
@@ -22,7 +27,6 @@ new Vue({
             numero: '',
         },
         ops: [],
-
         selectedOP: {
             centro: "",
             tipo: 0,
@@ -42,19 +46,26 @@ new Vue({
             numero: 0,
             tipoEnviar: "",
             valor: false
-        },
-        //Loading atributes
+        },        
         loadingValue: "Cargando.....",
         
-        //Button atributes
         isDisabled: true,
     },
-    /*Metodos que se ejecutan al iniciar la pagina*/
-    created() {        
+    /**
+     * - created: Funcion que se ejecuta al iniciar la aplicacion.
+     */
+    created() {
         this.reloadAll();
     },
+    /**
+     * - methods: Funciones que se ejecutan en el componente.
+     */
     methods: {
-        reloadAll:function(){
+        /**
+         * - reloadAll: Carga la lista de ordenes y pone por defecto la primera.
+         */
+
+        reloadAll: function () {
             const getOrdersExecution = new Promise((resolve, reject) => {
                 resolve(this.getOrders());
             });
@@ -71,20 +82,33 @@ new Vue({
                     console.log("NO SE PUEDEN OBTENER LOS PEDIDOS! " + err);
                 })
         },
-        comprobarVerde: function (op) {
-            //enviar objecto de post
+        /**
+         * 
+         * @param {*} op 
+         * @returns true si el op cumple las condiciones para estar en verde, false si no.
+         */
+        comprobarVerde: function (op) {            
             if (op.fondo === 'S' && op.lateral === 'S' && op.tapa === 'S') {
                 return true;
-            }else if (op.fondo === 'S' && op.lateral === 'S' && op.tapa === 'N'){
+            } else if (op.fondo === 'S' && op.lateral === 'S' && op.tapa === 'N') {
                 return true;
             }
-        
+
         },
+        /**
+         * 
+         * @param {*} op
+         * - Comprobar si el op esta en verde o no. 
+         */
         sendOP: function (op) {
             //Comprueba que elementos li estan marcados en verde
             this.toProduce.push(op)
-
         },
+        /**
+         * - Metodo OPCIONAL
+         * @param {*} op
+         * - Elimina el op de la lista de los que se van a enviar. 
+         */
         deleteOP: function (op) {
             for (let i = 0; i < this.toProduce.length; i++) {
                 if (this.toProduce[i] === op) {
@@ -92,7 +116,10 @@ new Vue({
                 }
             }
             this.deleteNullsFromArray();
-       },
+        },
+        /**
+         * - Elimina los nulls de la lista de los que se van a enviar.
+         */
         deleteNullsFromArray: function () {
             //Eliminar las posiciones que son nulas
             this.toProduce = this.toProduce.filter(element => {
@@ -101,83 +128,76 @@ new Vue({
         },
         /**
          *
-         * 
+         * - Envia un post con todos los ops que estan en verde, si la lista de ops esta vacia vuelve a llamar a la funcion reloadAll().
          */
-         closeProduction: async function () {
+        closeProduction: async function () {
             let toProduceArray = this.toProduce;
-            //Cambiamos el valor del boton y lo bloqueamos
-            console.log("ESTAAA" + toProduceArray)
             this.loadingValue = 'Enviando.....'
             this.isDisabled = true;
             document.getElementById("ops").style.display = "none";
             document.getElementById("reload").style.display = "block";
-            //Envia a PEP todas los objectos que van a producion
-            //const url = "http://localhost:8080/kriterOMNI/KriterRS004/closeOP";
             try {
-                await axios.post(ENDPOINT_URL+"/kriterOMNI/KriterRS004/closeOP", toProduceArray)
+                await axios.post(ENDPOINT_URL + "/kriterOMNI/KriterRS004/closeOP", toProduceArray)
                     .then(response => {
-
-
-                        //this.getOrders();
-                        console.log("EL length es " + this.orders.length)
-                        //this.setDefault(this.orders[0])
                         if (response.status === 200) {
                             this.getOps();
-                            //Si la array actual es del mismo length que la nueva la seteamos a 0
                             this.isDisabled = false;
                             document.getElementById("ops").style.display = "block";
                             document.getElementById("reload").style.display = "none";
-
-
                         }
-
-                        console.log("EL length es " + this.orders.length);
                         let actualLength = this.ops.length - this.toProduce.length;
-                        console.log("EL length es " + actualLength);      
-                        
-                        
-                        console.log("EL actual length es: " + actualLength)
-                        if(actualLength == 0){
-                            console.log("estoy aquiiiiI!!!")
+                        if (actualLength == 0) {
                             this.reloadAll();
                         }
-                    //this.displayReload(data.status);
                     })
                 this.isDisabled = true;
             }
             catch (error) {
                 console.log("El error que devuelve es: " + error.data);
             }
-
             this.refreshOps();
-            //this.refreshOrders();
             this.loadingValue = "Cargando....."
 
         },
+        /**
+         * - Llama a la funcion getOps() para que se carguen los ops desde el backEND.
+         */
         refreshOps: function () {
             this.toProduce = [];
             this.ops = [];
             this.getOps();
         },
+        /**
+         * - Llama a la funcion getOrders() para que se carguen las ordenes desde el backEND.
+         */
         refreshOrders: function () {
-            console.log(this.ops);
-            
             this.orders = [];
             this.getOrders();
             this.setDefault(this.orders[0]);
         },
+        /**
+         * 
+         * @param {*} a 
+         * @returns EL ide de cada OP con la suma de centro tipo serie y numero.
+         */
         filter: function (a) {
             let ideProducto = a.centro + a.tipo + a.serie + a.numero;
             return ideProducto.toUpperCase() === this.selectedOrder.id.toUpperCase();
         },
+        /**
+         * 
+         * @param {*} orderObject
+         * - Llama a la funcion setDefault() para que se ponga por defecto la primera op de la lista. 
+         */
         setSelected: function (orderObject) {
-            //console.log("cambiando  ->" + )
-            //Sacamos una array separando por '/' en cada uno de las posiciones
-            //let atributos = this.currentOrder.id.split('/')
-            //console.log(atributos);
-            //Recorrer la array
             this.setDefault(orderObject);
         },
+        /**
+         * 
+         * @param {*} order
+         * - Pone por defecto la primera op de la lista. 
+         */
+
         setDefault: function (order) {
             this.selectedOrder = order;
             this.selectedOrder.id = this.selectedOrder.centro + this.selectedOrder.tipo + this.selectedOrder.serie +
@@ -193,23 +213,28 @@ new Vue({
 
 
         },
+        /**
+         * - OPCIONAL
+         */
         toOPDefault: function () {
-            console.log(this.ops);
             if (this.ops.length >= 1) {
                 this.ops.forEach(op => {
-                    console.log(op)
+
                     if (this.comprobarVerde(op) === true) {
                         this.toProduce.push(op);
                         this.isDisabled = false;
                     }
                 });
             }
-
         },
-
+        /**
+         * 
+         * @param {*} op 
+         * @param {*} tipo
+         * - Se ejecuta antes de enviar el post de produccion, checkea que todo este correcto antes de hacer el post.  
+         */
         beforePost: function (op, tipo) {
-            //Vamos a poner en el selected op actual los valores de de cada uno de los tipos...
-
+            
             this.selectedOP = op;
             if (tipo === 'fondo') {
                 if (event.target.checked === true) {
@@ -235,123 +260,104 @@ new Vue({
 
             this.enableOP();
             
-            console.log("*************" + this.selectedOP);
-            //this.comprobarVerde(this.selectedOP);
             if (this.comprobarVerde(this.selectedOP) === true) {
                 this.sendOP(this.selectedOP);
             } else {
                 this.deleteOP(this.selectedOP);
             }
-            console.log(event.target.checked);
+
             this.opEnviar.centro = op.centro;
             this.opEnviar.serie = op.serie;
             this.opEnviar.tipo = op.tipo;
             this.opEnviar.numero = op.numero;
             this.opEnviar.tipoEnviar = tipo;
             this.opEnviar.valor = event.target.checked;
-            //console.log(this.opEnviar);
 
             this.postOP();
         },
+        /**
+         * - Post de cada OP al que hace el check.
+         */
         postOP: async function () {
-            //Hay que pasar el estado en que se encuentra el check
-
-            //const url = "http://localhost:8080/kriterOMNI/KriterRS004/marcarFase";
+            
             try {
                 await axios.post(ENDPOINT_URL + "/kriterOMNI/KriterRS004/marcarFase", this.opEnviar)
                     .then(data => {
                         console.log(data);
                     })
 
-
             } catch (error) {
                 console.log(error.response);
             }
 
-
         },
-        checkEnable: function (){
-            
-            for(let i = 0; i<this.ops.length; i++){
-                if(this.comprobarVerde(this.ops[i])){
+        /**
+         * 
+         * @returns true si todos la lista de OPS actual es verde, sino returna false.
+         */
+        checkEnable: function () {
+            for (let i = 0; i < this.ops.length; i++) {
+                if (this.comprobarVerde(this.ops[i])) {
                     return true;
                 }
             }
             return false;
         },
-
+        /**
+         * - Habilita el button
+         */
         enableOP: function () {
             this.isDisabled = !this.checkEnable()
         },
+        /**
+         * 
+         * @param {*} status
+         * Si el status es 200 habilita el boton y sino no lo habilita. 
+         */
         displayReload: async function (status) {
             if (status == 200) {
-
                 document.getElementById("ops").style.display = "block";
                 document.getElementById("reload").style.display = "none";
             } else {
-
                 document.getElementById("ops").style.display = "none";
                 document.getElementById("reload").style.display = "block";
             }
         },
-        
+        /**
+         * - Getter de la lista de Ops.
+         */
         getOps: async function () {
-
-            try {
-                //const url = "http://localhost:8080/kriterOMNI/KriterRS004/getOP?centro=" + this.selectedOrder.centro + "&tipo=" + this.selectedOrder.tipo
-                //    + "&serie=" + this.selectedOrder.serie + "&numero=" + this.selectedOrder.numero;
-
-                //const url = '../data/products.json';
-
+            try {                
                 const response = await axios(ENDPOINT_URL + "/kriterOMNI/KriterRS004/getOP?centro=" + this.selectedOrder.centro + "&tipo=" + this.selectedOrder.tipo
-                + "&serie=" + this.selectedOrder.serie + "&numero=" + this.selectedOrder.numero);
+                    + "&serie=" + this.selectedOrder.serie + "&numero=" + this.selectedOrder.numero);
                 const res = response.data;
 
                 this.ops = [];
-                
+
                 this.toProduce = [];
-                //TODO
+                
                 this.ops = res;
 
-                /*Activar el boton o no dependiendo de si hay algun metodo en verde*/
-                console.log("El valor de check enabled es: " + this.checkEnable());
-                if(this.checkEnable()){
+                if (this.checkEnable()) {
                     this.isDisabled = false;
-                }else{
-                    this.isDisabled = true;
-                }    
-
-                //Si la respeusta es 200 ponemos display none a la rueda y display true a los productos
-
-                if (response.status === 200) {
-                    document.getElementById("ops").style.display = "block";
-                    document.getElementById("reload").style.display = "none";
                 } else {
-                    document.getElementById("ops").style.display = "none";
-                    document.getElementById("reload").style.display = "block";
-                }
-
+                    this.isDisabled = true;
+                }                                
+                this.displayReload(response.status);
+                
             } catch (err) {
                 console.log(err);
             }
         },
-
+        /**
+         * - Getters de la lista de ordenes.
+         */
         getOrders: async function () {
-
-
-            try {
-                //const url = "http://localhost:8080/kriterOMNI/KriterRS004/getOrders";
-                //const url = "http://localhost:8080/kriterOMNI/KriterRS004/getOrders";
-
-                //const url = '../data/orders.json'
+            try {                
                 const response = await axios(ENDPOINT_URL + "/kriterOMNI/KriterRS004/getOrders");
-
                 const res = response.data;
                 this.orders = [];
-
                 this.orders = res;
-
-
             } catch (err) {
                 console.log("NO SE PUEDEN OBTENER LOS PEDIDOS!" + err);
             }
