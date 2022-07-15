@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!--Titulo de la pagina-->
+    <title>Detalle Ordenes[PA28819]</title>
+    <!--Libreria Personalizada de Bootstrap-->
+    <link rel="stylesheet" href="scss/custom.css" />
+    <!--Libreria para iconos de Bootstrap(Por si es necesario)-->
+    <link rel="stylesheet" href="node_modules/bootstrap-icons/font/bootstrap-icons.css" />
+    <!--Documento personal de CSS-->
+    <link rel="stylesheet" href="./css/mycss.css" />
+    <!--Añadir el CDN de VUE a nuestro proyecto-->
+    <script src="https://unpkg.com/vue@next"></script>
+    <!--FAVICON ICON-->
+    <link rel="shortcut icon" href="#">
+</head>
+
+<body id="app">
+    <!--Header STATICO (PA 28819)
+    CLASES:
+    Text Light: Coloca color blanco al texto
+    bg-primary: Coloca color azul a todo el div
+    ps-3: Coloca un padding de 3 px al text en la izquierda
+    py-1: Coloca un padding en el ejey de 1px; es decir arriba y abajo
+-->
+    <header class="bg-primary">
+
+        <div class="container-fluid">
+            <!--La empresa por default-->
+            <!--En el created hace un set de la empresa por default en empresa[0]-->
+
+            <h1 class="navbar-brand  bg-primary text-uppercase text-light col-12 col-lg-12  rounded-3" href="#">
+                {{ selectedOrder.serie }} {{ selectedOrder.numero }} {{ selectedOrder.nombre }}</h1>
+            <form class="pb-2">
+                <select class="form-select bg-light text-center w-100 text-uppercase" name="empresas" id="empresas"
+                    v-model="selectedOrder" v-on:change="setSelected(selectedOrder)">
+                    <!--Ponemos como value la id de cada pedido-->
+                    <option v-for="order in orders" :key="order.id" :value="order">
+                        <!--SI la ID es 0 o 1 que se añada al option que esta selecionado-->
+                        {{order.serie}} {{order.numero}} {{order.nomfiscli}}
+                    </option>
+                </select>
+            </form>
+        </div>
+    </header>
+
+    <!--Contenedor Inventario-->
+    <div class="mx-1">
+        <!--GRUPO HORIZONTAL ESTATICO con la clasificacion del inventario-->
+        <div class="header">
+            <ul class="list-group list-group-horizontal col-12">
+                <li class="list-group-item col-2 py-0" style="text-align: center;"><strong>OF</strong></li>
+                <li class="list-group-item col-6 py-0" style="text-align: center;"><strong>Artículo</strong></li>
+                <li class="list-group-item col-1 py-0" style="text-align: center;"><strong>Cantidad</strong></li>
+                <li class="list-group-item col-1 py-0" style="text-align: center;"><strong>Fondo</strong></li>
+                <li class="list-group-item col-1 py-0" style="text-align: center;"><strong>Lateral</strong></li>
+                <li class="list-group-item col-1 py-0" style="text-align: center;"><strong>Tapa</strong></li>
+            </ul>
+        </div>
+        <!--LOADER-->
+        <div id="reload" class="container text-center">
+            <div class="lds-ring ">
+                <div></div>
+            </div>
+            <div class="container mb-3">{{ loadingValue }}</div>
+        </div>
+
+        <!--**********************GRUPO NO ESTATICO DE GENERACION DE OPS-->
+        <div id="ops">
+            <ul v-for="op in ops" :key="`$index`" class="list-group list-group-horizontal col-12">
+
+                <li class="list-group-item col-2" v-bind:class="{'green-color': comprobarVerde(op)}">
+                    {{ op.serie + '/' + op.numero }}
+                </li>
+                <li class="list-group-item col-6" v-bind:class="{'green-color': comprobarVerde(op)}">{{
+                    op.denoart }}</li>
+                <li class="list-group-item col-1" style="text-align: right;" v-bind:class="{'green-color': comprobarVerde(op)}">{{
+                    op.cantidad }}</li>
+
+                <!--*******************FONDO-->
+                <li class="list-group-item col-1 text-center" v-bind:class="{'green-color': comprobarVerde(op)}">                    
+                        
+                    <input v-if="op.fondo === 'X'" class="form-check-input" v-on:change="beforePost(op,'fondo')" type="checkbox"
+                            value="false">
+                    
+                    <input v-if="op.fondo === 'S'" class="form-check-input" v-on:change="beforePost(op,'fondo')" type="checkbox"
+                            value="true" checked>
+                                            
+                </li>
+                <!--******************LATERAL-->
+                <li class="list-group-item col-1 text-center" v-bind:class="{'green-color': comprobarVerde(op)}">
+                    
+                    <input v-if="op.lateral === 'X'" class="form-check-input" v-on:change="beforePost(op,'lateral')" type="checkbox"
+                    value="false" >
+         
+                    <input v-if="op.lateral === 'S'" class="form-check-input" v-on:change="beforePost(op,'lateral')" type="checkbox"
+                    value="true"  checked>
+                
+                </li>
+                <!--*********************TAPA-->
+                <li class="list-group-item col-1 text-center" v-bind:class="{'green-color': comprobarVerde(op)}">
+                    
+                    <input v-if="op.tapa === 'X'" class="form-check-input" v-on:change="beforePost(op,'tapa')" type="checkbox"
+                        value="false" >
+                
+                    <input v-if="op.tapa === 'S'" class="form-check-input" v-on:change="beforePost(op,'tapa')" type="checkbox"
+                        value="true"  checked>
+                
+                </li>
+
+            </ul>
+        </div>
+    </div>
+
+
+    <footer class="footer text-center softgrey p-2" >
+        <div v-show="!isDisabled">
+            <button type="button" class="btn btn-primary  w-50 h-100" data-bs-toggle="modal" data-bs-target="#exampleModal" >
+                Cerrar Producción
+            </button>
+        </div>
+    </footer>
+
+
+    <!--Codigo del modal-->
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body text-center">
+                    <p>Se han finalizado todas las fases!</p><br>
+                    <p><strong>Seguro que quieres cerrar la produccion?</strong></p>
+                </div>
+                <div class="modal-footer col-12">
+                    <button type="button" class="btn btn-secondary col-6 mx-0 border border-light"
+                        data-bs-dismiss="modal">
+                        Cerrar
+                    </button>
+                    <button type="button" class="btn btn-primary col-6 mx-0 border border-light"
+                        v-on:click="closeProduction()" data-bs-dismiss="modal" :disabled="isDisabled">Cerrar Producción
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--Importar axios-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.0.0-alpha.1/axios.min.js"></script>
+    <!--Vinculacion de JQuery, JS-->
+    <script src="node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="https://code.jquery.com/jquery-2.1.3.min.js"></script>
+    <!--Vinculacion de VUEJS-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/1.0.18/vue.min.js"></script>
+    <!--Cargo mi Javascript-->
+    <script src="./scripts/index.js" type="module"></script>
+</body>
+
+</html>

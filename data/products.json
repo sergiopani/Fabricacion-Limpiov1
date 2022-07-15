@@ -1,0 +1,110 @@
+[
+    {
+        "centro": "0",
+        "tipo": 26,
+        "serie": "PA",
+        "numero": 28823,
+        "codiart": "LA21100X100X102",
+        "cantidad": 1,
+        "denoart": "Bolsa LA21: 100 X 100 X 102 cm CT",
+        "fondo": "S",
+        "lateral": "X",
+        "tapa": ""
+    },
+    {
+        "centro": "0",
+        "tipo": 26,
+        "serie": "PA",
+        "numero": 28824,
+        "codiart": "LA21100X110X110",
+        "cantidad": 1,
+        "denoart": "Bolsa LA21: 100 X 110 X 110 cm CT",
+        "fondo": "S",
+        "lateral": "S",
+        "tapa": "X"
+    },
+    {
+        "centro": "0",
+        "tipo": 26,
+        "serie": "PA",
+        "numero": 28825,
+        "codiart": "LA21100X100X102",
+        "cantidad": 1,
+        "denoart": "Bolsa LA21: 100 X 100 X 102 cm CT",
+        "fondo": "X",
+        "lateral": "",
+        "tapa": ""
+    },
+    {
+        "centro": "0",
+        "tipo": 26,
+        "serie": "PA",
+        "numero": 28826,
+        "codiart": "LA21100X100X102",
+        "cantidad": 1,
+        "denoart": "Bolsa LA21: 100 X 100 X 102 cm CT",
+        "fondo": "S",
+        "lateral": "X",
+        "tapa": ""
+    },
+    {
+        "centro": "0",
+        "tipo": 26,
+        "serie": "PA",
+        "numero": 28827,
+        "codiart": "LA21100X110X110",
+        "cantidad": 1,
+        "denoart": "Bolsa LA21: 100 X 110 X 110 cm CT",
+        "fondo": "S",
+        "lateral": "S",
+        "tapa": "X"
+    },
+    {
+        "centro": "0",
+        "tipo": 26,
+        "serie": "PA",
+        "numero": 28828,
+        "codiart": "LA21100X100X102",
+        "cantidad": 1,
+        "denoart": "Bolsa LA21: 100 X 100 X 102 cm CT",
+        "fondo": "X",
+        "lateral": "",
+        "tapa": ""
+    },
+    {
+        "centro": "0",
+        "tipo": 26,
+        "serie": "PA",
+        "numero": 28829,
+        "codiart": "LA21100X100X102",
+        "cantidad": 1,
+        "denoart": "Bolsa LA21: 100 X 100 X 102 cm CT",
+        "fondo": "S",
+        "lateral": "X",
+        "tapa": ""
+    },
+    {
+        "centro": "0",
+        "tipo": 26,
+        "serie": "PA",
+        "numero": 28830,
+        "codiart": "LA21100X110X110",
+        "cantidad": 1,
+        "denoart": "Bolsa LA21: 100 X 110 X 110 cm CT",
+        "fondo": "X",
+        "lateral": "S",
+        "tapa": "S"
+    },
+    {
+        "centro": "0",
+        "tipo": 26,
+        "serie": "PA",
+        "numero": 28831,
+        "codiart": "LA21100X100X102",
+        "cantidad": 1,
+        "denoart": "Bolsa LA21: 100 X 100 X 102 cm CT",
+        "fondo": "X",
+        "lateral": "",
+        "tapa": ""
+    }
+]
