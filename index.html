@@ -27,11 +27,11 @@
             <!--En el created hace un set de la empresa por default en empresa[0]-->
             <h1 class="navbar-brand  bg-primary text-uppercase text-light col-12 col-lg-12  rounded-3" href="#">
                 {{ selectedOrder.serie }} {{ selectedOrder.numero }} {{ selectedOrder.nombre }}</h1>
-            <form class="pb-2">
+            <form class="pb-2" >
                 <select class="form-select bg-light text-center w-100 text-uppercase" name="empresas" id="empresas"
-                    v-model="selectedOrder" v-on:change="setSelected(selectedOrder)">
+                    v-model="selectedOrder" v-on:change="setSelected(selectedOrder)" style="height: 100px;font-size: 20px;">
                     <!--Ponemos como value la id de cada pedido-->
-                    <option v-for="order in orders" :key="order.id" :value="order">
+                    <option v-for="order in orders" :key="order.id" :value="order" style="height: 100px;font-size: 30px;">
                         <!--SI la ID es 0 o 1 que se añada al option que esta selecionado-->
                         {{order.serie}} {{order.numero}} {{order.nomfiscli}}
                     </option>
@@ -62,37 +62,39 @@
         </div>
 
         <!--**********************GRUPO NO ESTATICO DE GENERACION DE OPS**************************-->
-        <div id="ops">
-            <ul v-for="op in ops" :key="`$index`" class="list-group list-group-horizontal col-12">
+        <div id="ops" class="d-flex">
+            <ul v-for="op in ops" :key="`$index`" class="list-group list-group-horizontal col-12" style="height: 100px;">
                 <!--********************OP, ARTICULOS, CANTIDAD-->
-                <li class="list-group-item col-2" v-bind:class="{'green-color': comprobarVerde(op)}">
-                    {{ op.serie + '/' + op.numero }}
+                
+                <li class="list-group-item col-2 centro-li" v-bind:class="{'green-color': comprobarVerde(op)}">
+                    <span>{{ op.serie + '/' + op.numero }}</span>
                 </li>
-                <li class="list-group-item col-6" v-bind:class="{'green-color': comprobarVerde(op)}">{{
-                    op.denoart }}</li>
-                <li class="list-group-item col-1" style="text-align: right;"
+                
+                <li class="list-group-item col-6 centro-li" v-bind:class="{'green-color': comprobarVerde(op)}">
+                    <span class="text-nowrap">{{ op.denoart }}</span></li>
+                <li class="list-group-item col-1 centro-li" style="text-align: right;"
                     v-bind:class="{'green-color': comprobarVerde(op)}">{{
                     op.cantidad }}</li>
 
                 <!--*******************FONDO-->
-                <li class="list-group-item col-1 text-center" v-bind:class="{'green-color': comprobarVerde(op)}">
-                    <input v-if="op.fondo === 'X'" class="form-check-input" v-on:change="beforePost(op,'fondo')"
+                <li class="list-group-item col-1 text-center " v-bind:class="{'green-color': comprobarVerde(op)}">
+                    <input v-if="op.fondo === 'X'" class="form-check-input checkbox " v-on:change="beforePost(op,'fondo')"
                         type="checkbox" value="false">
-                    <input v-if="op.fondo === 'S'" class="form-check-input" v-on:change="beforePost(op,'fondo')"
+                    <input v-if="op.fondo === 'S'" class="form-check-input checkbox " v-on:change="beforePost(op,'fondo')"
                         type="checkbox" value="true" checked>
                 </li>
                 <!--******************LATERAL-->
                 <li class="list-group-item col-1 text-center" v-bind:class="{'green-color': comprobarVerde(op)}">
-                    <input v-if="op.lateral === 'X'" class="form-check-input" v-on:change="beforePost(op,'lateral')"
+                    <input v-if="op.lateral === 'X'" class="form-check-input checkbox" v-on:change="beforePost(op,'lateral')"
                         type="checkbox" value="false">
-                    <input v-if="op.lateral === 'S'" class="form-check-input" v-on:change="beforePost(op,'lateral')"
+                    <input v-if="op.lateral === 'S'" class="form-check-input checkbox" v-on:change="beforePost(op,'lateral')"
                         type="checkbox" value="true" checked>
                 </li>
                 <!--*********************TAPA-->
                 <li class="list-group-item col-1 text-center" v-bind:class="{'green-color': comprobarVerde(op)}">
-                    <input v-if="op.tapa === 'X'" class="form-check-input" v-on:change="beforePost(op,'tapa')"
+                    <input v-if="op.tapa === 'X'" class="form-check-input checkbox" v-on:change="beforePost(op,'tapa')"
                         type="checkbox" value="false">
-                    <input v-if="op.tapa === 'S'" class="form-check-input" v-on:change="beforePost(op,'tapa')"
+                    <input v-if="op.tapa === 'S'" class="form-check-input checkbox" v-on:change="beforePost(op,'tapa')"
                         type="checkbox" value="true" checked>
                 </li>
             </ul>
@@ -100,31 +102,32 @@
     </div>
 
     <!--**************************FOOTER DE LA PAGINA************************-->
-    <footer class="footer text-center softgrey p-2">
-        <div v-show="!isDisabled">
+    <footer class="footer text-center softgrey py-2" style="height: 100px;">
+        <div v-show="!isDisabled" style="height: 80px;">
             <button type="button" class="btn btn-primary  w-50 h-100" data-bs-toggle="modal"
                 data-bs-target="#exampleModal">
-                Cerrar Producción
+                <span style="font-size: 20px;">Cerrar Producción</span>
             </button>
         </div>
     </footer>
 
     <!--**********************CODIGO DEL MODAL******************************-->
     <!-- Modal -->
-    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal fade" style="margin-top: 100px;" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
-                <div class="modal-body text-center">
+                <div class="modal-body text-center pt-5">
                     <p>Se han finalizado todas las fases!</p><br>
-                    <p><strong>Seguro que quieres cerrar la produccion?</strong></p>
+                    <p><strong>Seguro que quieres cerrar la producción?</strong></p>
                 </div>
                 <div class="modal-footer col-12">
-                    <button type="button" class="btn btn-secondary col-6 mx-0 border border-light"
+                    <button type="button" class="btn btn-secondary col-6 mx-0 border border-light" style="height: 60px;"
                         data-bs-dismiss="modal">
-                        Cerrar
+                        <span style="font-size: 20px;">Cerrar</span>
                     </button>
-                    <button type="button" class="btn btn-primary col-6 mx-0 border border-light"
-                        v-on:click="closeProduction()" data-bs-dismiss="modal" :disabled="isDisabled">Cerrar Producción
+                    <button type="button" class="btn btn-primary col-6 mx-0 border border-light" style="height: 60px;"
+                        v-on:click="closeProduction()" data-bs-dismiss="modal" :disabled="isDisabled">
+                        <span style="font-size: 20px;">Cerrar Producción</span>
                     </button>
                 </div>
             </div>
